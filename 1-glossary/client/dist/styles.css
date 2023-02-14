@@ -1,10 +1,10 @@
 /**
- * 
+ *
  * Based on Josh Comeau's CSS Reset: https://www.joshwcomeau.com/css/custom-css-reset/.
- * 
+ *
  * Feel free to edit this file as needed.
- * 
- */ 
+ *
+ */
 
 *,
 *::before,
@@ -49,12 +49,47 @@ h2,
 h3,
 h4,
 h5,
-h6 {
+h6,
+#add-form,
+.word {
   overflow-wrap: break-word;
+  text-align: center;
 }
 
 main {
   max-width: 840px;
   padding: 16px;
   margin: auto;
+}
+
+#add-form {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: antiquewhite;
+}
+
+.main-buttons, #add-button {
+  background-color: aquamarine;
+  border-radius: 10px;
+}
+.main-buttons:hover, #add-button:hover {
+  user-select: none;
+  box-shadow: 0px 0px 10px rgb(0, 0, 0);
+  cursor: pointer;
+}
+.word {
+  border-radius: 50px;
+  background-color: aliceblue;
+  margin-top: 70px;
+  font-size: 30px;
+}
+
+#add-button {
+  position: relative;
+  font-size: 30px;
+  left: 50%;
+  margin-top: 50px;
+  transform: translateX(-50%);
 }
