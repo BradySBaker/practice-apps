@@ -38,12 +38,12 @@ var App = () => {
 		});
 	}
 
-	const editWord = (term) => {
+	const editWord = (term, newDef) => {
 		$.ajax({
 			type: 'PUT',
 			url: '/words',
 			contentType: 'application/json',
-			data: JSON.stringify({term}),
+			data: JSON.stringify({term, newDef}),
 			success: () => {console.log('Modified'); fetch()},
 			error: (err) => {console.log(err)}
 		});
@@ -51,6 +51,9 @@ var App = () => {
 
 	const addWord = (term, def) => {
 		setFormVisible(false);
+		if (term === '' && def === '') {
+			return;
+		}
 		$.ajax({
 			type: 'POST',
 			url: '/words',

@@ -6,7 +6,7 @@ var WordList = (props) => {
 	<div>
 		{props.words.map((curWord) => {
 			return (
-				<Word key={curWord._id} word={curWord} deleteWord={props.deleteWord}/>
+				<Word key={curWord._id} word={curWord} deleteWord={props.deleteWord} editWord={props.editWord}/>
 			)
 		})}
 	</div>

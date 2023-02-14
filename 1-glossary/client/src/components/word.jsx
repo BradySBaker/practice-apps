@@ -5,9 +5,9 @@ var Word = (props) => {
 		props.deleteWord(props.word.term);
 	}
 
-	var editSelf = () => {
-		props.editWord(props.word.term);
-	}
+var editSelf = (def) => {
+	props.editWord(props.word.term, def);
+}
 
 	return (
 	<div className="word">

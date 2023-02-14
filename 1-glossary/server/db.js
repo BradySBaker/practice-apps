@@ -43,8 +43,15 @@ var deleteWord = (term, cb) => {
 	});
 };
 
-var editWord = (term, cb) => {
-
+var editWord = (term, newDef, cb) => {
+	console.log(term, newDef);
+	Word.updateOne({term}, {def: newDef}, (err) => {
+		if (err) {
+			cb(err);
+		} else {
+			cb(null);
+		}
+	})
 }
 
 module.exports.addWord = addWord;

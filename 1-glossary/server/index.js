@@ -42,6 +42,18 @@ app.delete('/words', (req, res) => {
 	});
 });
 
+app.put('/words', (req, res) => {
+	db.editWord(req.body.term, req.body.newDef, (err) => {
+		if (err) {
+			res.statusCode = 404;
+			res.end();
+		} else {
+			res.statusCode = 202;
+			res.send(JSON.stringify(req.body));
+		}
+	});
+});
+
 app.listen(process.env.PORT, () => {
 	console.log('listening on ' + process.env.PORT);
 });
