@@ -3,12 +3,15 @@ import ReactDOM from 'react-dom';
 import WordList from './components/wordList.jsx';
 import AddForm from './components/addForm.jsx';
 import $ from 'jquery';
+import handleSearch from './helpers/handleSearch.js';
+
 
 var App = () => {
 	const [editFormVisible, setEditFormVisible] = useState(false);
 	const [addFormVisible, setAddFormVisible] = useState(false);
 	const [editableTerm, setEditableTerm] = useState(null);
 	const [wordList, setWordList] = useState([]);
+	const [originWordList, setOriginWordList] = useState([]);
 
 	//On startup
 	useEffect(() => {
@@ -17,6 +20,7 @@ var App = () => {
 
 	const update = (data) => {
 		setWordList(data);
+		setOriginWordList(data);
 	}
 
 	const fetch = () => {
@@ -80,8 +84,9 @@ var App = () => {
 
 	return (
 		<div>
-			<h1>Glossary</h1>
-			<button onClick={() => {!editFormVisible ? setAddFormVisible(true) : null}} className='main-buttons' id='add-button'>Add</button>
+			<h1 id="title">Glossary</h1>
+			<input id='search' type="text" placeholder='search...' onChange={() => setWordList(handleSearch(originWordList))}/>
+			<button onClick={() => {!editFormVisible ? setAddFormVisible(true) : null}} className='main-buttons' id='add-button'>Add Word</button>
 			{addFormVisible ? <AddForm addWord={addWord}/> : null}
 			{editFormVisible ? <AddForm editWord={editWord}/> : null}
 			<WordList deleteWord={deleteWord} allowEdit={allowEditableTerm} words={wordList}/>

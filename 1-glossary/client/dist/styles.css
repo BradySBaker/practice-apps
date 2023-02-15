@@ -62,24 +62,33 @@ main {
   margin: auto;
 }
 
+#title {
+  font-size: 60px;
+  text-decoration: underline;
+}
+
 #add-form {
+  font-size: 20px;
   z-index: 100;
   position: absolute;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: antiquewhite;
+  background-color: rgb(115, 173, 176);
+  border-radius: 20px;
 }
 .main-buttons {
+  padding: 5px 20px 5px 20px;
   font-weight: bold;
-  border-color: rgb(0, 0, 0);
+  border: 2px solid black;
   background-color: rgb(255, 255, 255);
   border-radius: 10px;
   font-size: 20px;
 }
 .main-buttons:hover {
   user-select: none;
-  box-shadow: 0px 0px 10px rgb(0, 0, 0);
+  border: 2px solid rgb(28, 0, 94);
+  border-radius: 15px;
   cursor: pointer;
 }
 .word {
@@ -88,15 +97,21 @@ main {
   background-color: aliceblue;
 }
 
-#add-button, .word {
+#add-button, .word, #search {
   position: relative;
   font-size: 30px;
   left: 50%;
-  margin-top: 50px;
+  margin-top: 70px;
   transform: translateX(-50%);
 }
 .modify-buttons {
   display: inline;
   margin-left: 150px;
   margin-right: 150px;
+}
+
+#search {
+  display: block;
+  height: 30px;
+  margin-top: 10px;
 }
