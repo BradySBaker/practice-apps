@@ -6,12 +6,12 @@ var Word = (props) => {
 	}
 
 var editSelf = (def) => {
-	props.editWord(props.word.term, def);
+	props.editWord(props.word.term);
 }
 
 	return (
 	<div className="word">
-		<div><b>Term:</b> {props.word.term} <b>Def:</b> {props.word.def}</div>
+		<div><b>{props.word.term}:</b> {props.word.def}</div>
 		<ModifyButtons delete={deleteSelf} edit={editSelf}/>
 	</ div>
 	)

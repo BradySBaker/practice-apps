@@ -6,7 +6,7 @@ var AddForm = (props) => {
 	};
 
 	var edit = () => {
-		var def= document.getElementById("desc-input").value;
+		var def = document.getElementById("desc-input").value;
 		props.editWord(def);
 	}
 

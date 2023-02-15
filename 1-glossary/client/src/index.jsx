@@ -5,7 +5,9 @@ import AddForm from './components/addForm.jsx';
 import $ from 'jquery';
 
 var App = () => {
-	const [formVisible, setFormVisible] = useState(false);
+	const [editFormVisible, setEditFormVisible] = useState(false);
+	const [addFormVisible, setAddFormVisible] = useState(false);
+	const [editableTerm, setEditableTerm] = useState(null);
 	const [wordList, setWordList] = useState([]);
 
 	//On startup
@@ -28,6 +30,7 @@ var App = () => {
 	};
 
 	const deleteWord = (term) => {
+		setEditFormVisible(false);
 		$.ajax({
 			type: 'DELETE',
 			url: '/words',
@@ -38,7 +41,18 @@ var App = () => {
 		});
 	}
 
-	const editWord = (term, newDef) => {
+	const allowEditableTerm = (term) => {
+		setEditFormVisible(true);
+		setAddFormVisible(false);
+		setEditableTerm(term);
+	}
+
+	const editWord = (newDef) => {
+		var term = editableTerm;
+		setEditFormVisible(false);
+		if (newDef === '') {
+			return;
+		}
 		$.ajax({
 			type: 'PUT',
 			url: '/words',
@@ -50,8 +64,8 @@ var App = () => {
 	};
 
 	const addWord = (term, def) => {
-		setFormVisible(false);
-		if (term === '' && def === '') {
+		setAddFormVisible(false);
+		if (term === '' || def === '') {
 			return;
 		}
 		$.ajax({
@@ -67,9 +81,10 @@ var App = () => {
 	return (
 		<div>
 			<h1>Glossary</h1>
-			<button onClick={() => {setFormVisible(true)}} id='add-button'>Add</button>
-			{formVisible ? <AddForm addWord={addWord}/> : null}
-			<WordList deleteWord={deleteWord} editWord={editWord} words={wordList}/>
+			<button onClick={() => {!editFormVisible ? setAddFormVisible(true) : null}} className='main-buttons' id='add-button'>Add</button>
+			{addFormVisible ? <AddForm addWord={addWord}/> : null}
+			{editFormVisible ? <AddForm editWord={editWord}/> : null}
+			<WordList deleteWord={deleteWord} allowEdit={allowEditableTerm} words={wordList}/>
 		</div>
 	)
 }
