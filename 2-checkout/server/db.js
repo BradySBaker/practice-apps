@@ -1,5 +1,6 @@
 const mysql = require("mysql2");
 const Promise = require("bluebird");
+require("dotenv").config();
 
 // Configure process.env variables in ../.env
 const connection = mysql.createConnection({
@@ -11,14 +12,32 @@ const connection = mysql.createConnection({
 
 const db = Promise.promisifyAll(connection, { multiArgs: true });
 
+var responsesTableSchema = 'id INT NOT NULL AUTO_INCREMENT PRIMARY KEY';
+responsesTableSchema += 'session_id VARCHAR(64) NULL DEFAULT NULL',
+
+
 db.connectAsync()
   .then(() => console.log(`Connected to MySQL as id: ${db.threadId}`))
   .then(() =>
     // Expand this table definition as needed:
     db.queryAsync(
-      "CREATE TABLE IF NOT EXISTS responses (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY)"
-    )
-  )
+      `CREATE TABLE IF NOT EXISTS responses (
+        id INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
+        sessionId VARCHAR(64) NULL DEFAULT NULL,
+        name VARCHAR(30) NULL DEFAULT NULL,
+        email VARCHAR(30) NULL DEFAULT NULL,
+        password VARCHAR(20) NULL DEFAULT NULL,
+        address1 VARCHAR(30) NULL DEFAULT NULL,
+        address2 VARCHAR(30) NULL DEFAULT NULL,
+        city VARCHAR(30) NULL DEFAULT NULL,
+        state VARCHAR(30) NULL DEFAULT NULL,
+        zipcode INTEGER NULL DEFAULT NULL,
+        cardNum INTEGER NULL DEFAULT NULL,
+        expireDate INTEGER NULL DEFAULT NULL,
+        cvv INTEGER NULL DEFAULT NULL,
+        PRIMARY KEY (id)
+      );`
+    ))
   .catch((err) => console.log(err));
 
 module.exports = db;

@@ -1,7 +1,7 @@
 import Word from './word.jsx';
 import {useState} from 'react';
 var WordList = (props) => {
-
+	
 	return (
 	<div>
 		{props.words.map((curWord) => {
