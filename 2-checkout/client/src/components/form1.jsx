@@ -1,6 +1,6 @@
 var Form1 = () => {
 	return (
-		<form id="f1">
+		<form id="f1" className='form'>
 			<label htmlFor="name">Name: </label>
 			<input type="text" id="name" name="name"/>
 			<label htmlFor="email">Email: </label>

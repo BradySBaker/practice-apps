@@ -20,7 +20,7 @@ app.use(express.json());
 // Serves up all static and generated assets in ../client/dist.
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
-app.post('/f1', (req, res) => {
+app.post('/response', (req, res) => {
 	dbHelper.saveResponse(req.session_id, req.body, (err) => {
 		if (err) {
 			res.statusCode = 404;
@@ -30,7 +30,6 @@ app.post('/f1', (req, res) => {
 			res.send(JSON.stringify(req.body));
 		}
 	});
-})
-
+});
 app.listen(process.env.PORT);
 console.log(`Listening at http://localhost:${process.env.PORT}`);

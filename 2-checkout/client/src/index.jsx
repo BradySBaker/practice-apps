@@ -1,43 +1,96 @@
 import React, {useState} from "react";
 import { render } from "react-dom";
 import Form1 from './components/form1.jsx';
+import Form2 from './components/form2.jsx';
 import $ from 'jquery';
+
+
+var getInfo = (id) => {
+  var form = document.getElementById(id);
+  var formValObj = {};
+  console.log(form, id);
+  for (var i = 0; i < form.length; i++) {
+    if (form[i].value !== '') {
+      formValObj[form[i].id] = form[i].value;
+    } else {
+      return;
+    }
+  }
+  return formValObj;
+};
+
+var sendInfo = (formValues, cb) => {
+  if (!formValues) {
+    return 'empty field';
+  }
+  $.ajax({
+    type: 'POST',
+    url: `/response`,
+    contentType: 'application/json',
+    data: JSON.stringify(formValues),
+    success: cb,
+    error: (err) => {console.log('err => ', err)}
+  });
+};
+
+var F3Page = () => {
+  return (
+    <h1>F3 Page</h1>
+  )
+}
+
+var renderF3Page = () => {
+  render(
+    <F3Page />,
+    document.getElementById("root")
+  )
+};
+
+var F2Page = () => {
+  const [errorVisible, setErrorVisible] = useState(false);
+
+  var handleInfo = () => {
+    setErrorVisible(false);
+    var err = sendInfo(getInfo('f2'), renderF3Page);
+    if (err) {
+      setErrorVisible(true);
+    }
+  };
+
+  return(
+    <div>
+      <h1>F2 Page</h1>
+      <Form2 />
+      <button onClick={handleInfo}>Next</button>
+      {errorVisible ? <p style={{'color':'red'}}>Incomplete Form!</p> : null}
+    </div>
+  )
+}
+
+var renderF2Page = () => {
+  render(
+    <F2Page />,
+    document.getElementById("root")
+  )
+};
 
 var F1Page = () => {
   const [errorVisible, setErrorVisible] = useState(false);
 
-  var getInfo = () => {
+  var handleInfo = () => {
     setErrorVisible(false);
-    var form = document.getElementById('f1');
-    var formValObj = {};
-    for (var i = 0; i < form.length; i++) {
-      if (form[i].value !== '') {
-        formValObj[form[i].id] = form[i].value;
-      } else {
-        setErrorVisible(true);
-        return;
-      }
+    var err = sendInfo(getInfo('f1'), renderF2Page);
+    if (err) {
+      setErrorVisible(true);
     }
-    sendInfo(formValObj);
   };
-
-  var sendInfo = (formValues) => {
-    $.ajax({
-      type: 'POST',
-      url: '/f1',
-      contentType: 'application/json',
-      data: JSON.stringify(formValues),
-      success: () => {console.log('success!!')},
-      error: (err) => {console.log(err)}
-    });
-  }
 
   return (
     <div>
       <h1>F1 Page</h1>
       <Form1 />
-      <button onClick={getInfo}>Next</button>
-      {errorVisible ? <p>Incomplete Form!</p> : null}
+      <button onClick={handleInfo}>Next</button>
+      {errorVisible ? <p style={{'color':'red'}}>Incomplete Form!</p> : null}
     </div>
   )
 }

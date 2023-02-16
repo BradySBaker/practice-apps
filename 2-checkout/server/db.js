@@ -22,7 +22,7 @@ db.connectAsync()
     // Expand this table definition as needed:
     db.queryAsync(
       `CREATE TABLE IF NOT EXISTS responses (
-        id INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
+        id INTEGER AUTO_INCREMENT,
         sessionId VARCHAR(64) NULL DEFAULT NULL,
         name VARCHAR(30) NULL DEFAULT NULL,
         email VARCHAR(30) NULL DEFAULT NULL,
@@ -32,6 +32,7 @@ db.connectAsync()
         city VARCHAR(30) NULL DEFAULT NULL,
         state VARCHAR(30) NULL DEFAULT NULL,
         zipcode INTEGER NULL DEFAULT NULL,
+        phone INTEGER NULL DEFAULT NULL,
         cardNum INTEGER NULL DEFAULT NULL,
         expireDate INTEGER NULL DEFAULT NULL,
         cvv INTEGER NULL DEFAULT NULL,
