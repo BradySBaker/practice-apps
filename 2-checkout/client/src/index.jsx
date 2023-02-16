@@ -2,15 +2,15 @@ import React, {useState} from "react";
 import { render } from "react-dom";
 import Form1 from './components/form1.jsx';
 import Form2 from './components/form2.jsx';
+import Form3 from './components/form3.jsx';
 import $ from 'jquery';
 
 
 var getInfo = (id) => {
   var form = document.getElementById(id);
   var formValObj = {};
-  console.log(form, id);
   for (var i = 0; i < form.length; i++) {
-    if (form[i].value !== '') {
+    if (form[i].value !== '' || form[i].id === 'address2') {
       formValObj[form[i].id] = form[i].value;
     } else {
       return;
@@ -33,9 +33,31 @@ var sendInfo = (formValues, cb) => {
   });
 };
 
+var renderFinalPage = () => {
+  render(
+    <h1>PURCHASE COMPLETE!</h1>,
+    document.getElementById("root")
+  )
+};
+
 var F3Page = () => {
+  const [errorVisible, setErrorVisible] = useState(false);
+
+  var handleInfo = () => {
+    setErrorVisible(false);
+    var err = sendInfo(getInfo('f3'), renderFinalPage);
+    if (err) {
+      setErrorVisible(true);
+    }
+  };
+
   return (
-    <h1>F3 Page</h1>
+    <div>
+      <h1>F3 Page</h1>
+      <Form3 />
+      <button onClick={handleInfo}>Next</button>
+      {errorVisible ? <p style={{'color':'red'}}>Incomplete Form!</p> : null}
+    </div>
   )
 }
 

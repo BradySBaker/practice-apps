@@ -34,8 +34,9 @@ db.connectAsync()
         zipcode INTEGER NULL DEFAULT NULL,
         phone INTEGER NULL DEFAULT NULL,
         cardNum INTEGER NULL DEFAULT NULL,
-        expireDate INTEGER NULL DEFAULT NULL,
+        expire INTEGER NULL DEFAULT NULL,
         cvv INTEGER NULL DEFAULT NULL,
+        billZip INTEGER NULL DEFAULT NULL,
         PRIMARY KEY (id)
       );`
     ))
