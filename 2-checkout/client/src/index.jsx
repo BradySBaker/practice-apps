@@ -21,18 +21,33 @@ var organizeInfo = (id) => {
 };
 
 var displayError = (err) => {
-  render(
-    <div>
-      <h1 style={{'color': 'red'}}>Error: {err.responseText}</h1>
-      <button onClick={renderHomePage}>Home</button>
-    </div>,
-    document.getElementById("root")
-  )
+  //If client already working on a form
+  if (err.responseText === '"2"' || err.responseText === '"3"') {
+    var pageId = Number(JSON.parse(err.responseText));
+    render(
+      <div>
+        <h1>Looks like you've already started the checkout proccess!</h1>
+        <button onClick={() => {renderForm(pageId)}}>Return To Prev Form</button>
+      </div>,
+      document.getElementById("root")
+    )
+  } else {
+    render(
+      <div>
+        <h1 style={{'color': 'red'}}>Error: {err.responseText}</h1>
+        <button onClick={renderHomePage}>Home</button>
+      </div>,
+      document.getElementById("root")
+    )
+  }
 }
 
-var sendInfo = (formValues, cb) => {
+var sendInfo = (formValues, cb, allowEdit) => {
   if (!formValues) {
     return 'empty field';
+  }
+  if (allowEdit) {
+    formValues.allowEdit = allowEdit;
   }
   $.ajax({
     type: 'POST',
@@ -63,6 +78,7 @@ var renderFinalPage = () => {
         <h3>Purchase Details</h3>
         <DetailList details={data}/>
         <button onClick={renderHomePage}>Purchase</button>
+        <button onClick={() => {renderForm(3)}}>Back</button>
       </div>
      ,
       document.getElementById("root")
@@ -70,28 +86,20 @@ var renderFinalPage = () => {
   });
 };
 
+//Forms ------------
 
-var renderF3Page = () => {
-  render(
-    <FormPage id={3} />,
-    document.getElementById("root")
-  )
-};
 
-var renderF2Page = () => {
-  render(
-    <FormPage id={2} />,
-    document.getElementById("root")
-  )
-};
-
-//F1 -------------
-var FormPage = (form) => {
+var FormPage = (form, allowEdit) => {
   const [errorVisible, setErrorVisible] = useState(false);
-  var functions = [renderF2Page, renderF3Page, renderFinalPage];
   var handleInfo = () => {
     setErrorVisible(false);
-    var err = sendInfo(organizeInfo(`f${form.id}`), functions[form.id - 1]);
+    var err = sendInfo(organizeInfo(`f${form.id}`), () => {
+      if (form.id === 3) {
+        renderFinalPage();
+      } else {
+        renderForm(form.id+1);
+      }
+    }, form.allowEdit);
     if (err) {
       setErrorVisible(true);
     }
@@ -104,15 +112,16 @@ var FormPage = (form) => {
       {form.id === 2 ? <Form2 /> : null}
       {form.id === 3 ? <Form3 /> : null}
       <button onClick={handleInfo}>Next</button>
+      {form.id !== 1 ? <button onClick={() => {renderForm(form.id - 1, true)}}>Back</button> : null}
       {errorVisible ? <p style={{'color':'red'}}>Incomplete Form!</p> : null}
     </div>
   )
 };
 
 
-var renderF1Page = () => {
+var renderForm = (id, allowEdit = false) => {
   render(
-    <FormPage id={1}/>,
+    <FormPage id={id} allowEdit={allowEdit}/>,
     document.getElementById("root")
   )
 };
@@ -122,7 +131,7 @@ var renderHomePage = () => {
   render(
     <div>
       <h1>Shopping cart</h1>
-      <button onClick={renderF1Page}>Proceed to checkout</button>
+      <button onClick={() => renderForm(1)}>Proceed to checkout</button>
     </div>,
     document.getElementById("root")
   );

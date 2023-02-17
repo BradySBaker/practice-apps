@@ -15,8 +15,10 @@ var createInsertQuery = (data, sessionId) => {
 	var columns = 'sessionId';
 	var values = `'${sessionId}'`;
 	for (var key in data) {
+		if (key !== 'allowEdit') {
 			columns += `, ${key}`
 			values += `, '${data[key]}'`;
+		}
 		}
 	var query = `INSERT INTO responses (${columns}) VALUES (${values})`
 	return query;
@@ -25,10 +27,12 @@ var createInsertQuery = (data, sessionId) => {
 var createUpdateQuery = (data, sessionId) => {
 	var setQuery;
 	for (var key in data) {
-		if (!setQuery) {
-			setQuery = `${key} = '${data[key]}'`
-		} else {
-			setQuery += `, ${key} = '${data[key]}'`
+		if (key !== 'allowEdit') {
+			if (!setQuery) {
+				setQuery = `${key} = '${data[key]}'`
+			} else {
+				setQuery += `, ${key} = '${data[key]}'`
+			}
 		}
 	}
 	var query = `UPDATE responses SET ${setQuery} WHERE sessionId = '${sessionId}'`
@@ -53,13 +57,17 @@ var saveResponse = (session, data, cb) => {
 				return;
 			}
 		} else {
-			if (data.name) {
-				if (responseData.length === 14) {
-					cb('You already submitted this form!');
+			if (data.name && !data.allowEdit) {
+				if (responseData[0].billZip) {
+					cb('You already completed the checkout process!');
+					return;
+				} else if (!responseData[0].address1) {
+					cb('2');
+					return;
+				} else {
+					cb('3');
 					return;
 				}
-				cb(null);
-				return;
 			}
 			query = createUpdateQuery(data, session);
 		}
