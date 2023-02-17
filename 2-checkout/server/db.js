@@ -37,6 +37,7 @@ db.connectAsync()
         expire INTEGER NULL DEFAULT NULL,
         cvv INTEGER NULL DEFAULT NULL,
         billZip INTEGER NULL DEFAULT NULL,
+        checkout BOOLEAN default false,
         PRIMARY KEY (id)
       );`
     ))

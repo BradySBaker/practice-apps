@@ -1,7 +1,6 @@
 var DetailList = (props) => {
-	console.log(props);
 	return (
-		<ul>
+		<ul className='list'>
 			<li>Name: {props.details.name}</li>
 			<li>Email: {props.details.email}</li>
 			<li>Password: {props.details.password}</li>

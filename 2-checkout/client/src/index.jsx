@@ -22,12 +22,14 @@ var organizeInfo = (id) => {
 
 var displayError = (err) => {
   //If client already working on a form
-  if (err.responseText === '"2"' || err.responseText === '"3"') {
+  var errText = err.responseText;
+  if (errText === '"2"' || errText === '"3"' || errText === '"checkoutFalse"') {
+    var atEnd = errText === '"checkoutFalse"';
     var pageId = Number(JSON.parse(err.responseText));
     render(
       <div>
         <h1>Looks like you've already started the checkout proccess!</h1>
-        <button onClick={() => {renderForm(pageId)}}>Return To Prev Form</button>
+        <button onClick={() => {atEnd ? renderFinalPage() : renderForm(pageId)}}>Return To Prev Point</button>
       </div>,
       document.getElementById("root")
     )
@@ -42,12 +44,21 @@ var displayError = (err) => {
   }
 }
 
-var sendInfo = (formValues, cb, allowEdit) => {
+var finalize = () => {
+  sendInfo({}, () => {
+    renderHomePage();
+  }, false, true);
+}
+
+var sendInfo = (formValues, cb, allowEdit, checkout) => {
   if (!formValues) {
     return 'empty field';
   }
   if (allowEdit) {
     formValues.allowEdit = allowEdit;
+  }
+  if (checkout) {
+    formValues.checkout = true;
   }
   $.ajax({
     type: 'POST',
@@ -78,7 +89,7 @@ var renderFinalPage = () => {
         <h3>Purchase Details</h3>
         <DetailList details={data}/>
         <div className='buttonContainer'>
-          <button onClick={renderHomePage}>Purchase</button>
+          <button onClick={finalize}>Purchase</button>
           <button id="back" onClick={() => {renderForm(3)}}>Back</button>
         </div>
       </div>

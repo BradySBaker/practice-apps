@@ -29,7 +29,11 @@ var createUpdateQuery = (data, sessionId) => {
 	for (var key in data) {
 		if (key !== 'allowEdit') {
 			if (!setQuery) {
-				setQuery = `${key} = '${data[key]}'`
+				if (key === 'checkout') {
+					 setQuery = 'checkout = true';
+				} else {
+					setQuery = `${key} = '${data[key]}'`
+				}
 			} else {
 				setQuery += `, ${key} = '${data[key]}'`
 			}
@@ -58,14 +62,17 @@ var saveResponse = (session, data, cb) => {
 			}
 		} else {
 			if (data.name && !data.allowEdit) {
-				if (responseData[0].billZip) {
+				if (responseData[0].checkout) {
 					cb('You already completed the checkout process!');
 					return;
 				} else if (!responseData[0].address1) {
 					cb('2');
 					return;
-				} else {
+				} else if (!responseData[0].billZip) {
 					cb('3');
+					return;
+				} else {
+					cb('checkoutFalse');
 					return;
 				}
 			}
