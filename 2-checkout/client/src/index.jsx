@@ -3,10 +3,11 @@ import { render } from "react-dom";
 import Form1 from './components/form1.jsx';
 import Form2 from './components/form2.jsx';
 import Form3 from './components/form3.jsx';
+import DetailList from './components/detailList.jsx';
 import $ from 'jquery';
 
-
-var getInfo = (id) => {
+//--------External functions
+var organizeInfo = (id) => {
   var form = document.getElementById(id);
   var formValObj = {};
   for (var i = 0; i < form.length; i++) {
@@ -19,6 +20,16 @@ var getInfo = (id) => {
   return formValObj;
 };
 
+var displayError = (err) => {
+  render(
+    <div>
+      <h1 style={{'color': 'red'}}>Error: {err.responseText}</h1>
+      <button onClick={renderHomePage}>Home</button>
+    </div>,
+    document.getElementById("root")
+  )
+}
+
 var sendInfo = (formValues, cb) => {
   if (!formValues) {
     return 'empty field';
@@ -29,23 +40,43 @@ var sendInfo = (formValues, cb) => {
     contentType: 'application/json',
     data: JSON.stringify(formValues),
     success: cb,
-    error: (err) => {console.log('err => ', err)}
+    error: (err) => {displayError(err)}
   });
 };
 
+var getInfo = (cb) => {
+  $.ajax({
+    type: 'GET',
+    url: '/response',
+    dataType:'json',
+    success: (data) => {cb(data)},
+    error: (err) => {console.log(err)}
+  });
+}
+
+//Final -----------------
 var renderFinalPage = () => {
-  render(
-    <h1>PURCHASE COMPLETE!</h1>,
-    document.getElementById("root")
-  )
+  getInfo((data) => {
+    console.log(data);
+    render(
+      <div>
+        <h3>Purchase Details</h3>
+        <DetailList details={data}/>
+        <button onClick={renderHomePage}>Purchase</button>
+      </div>
+     ,
+      document.getElementById("root")
+    )
+  });
 };
 
+//F3 ------------------
 var F3Page = () => {
   const [errorVisible, setErrorVisible] = useState(false);
 
   var handleInfo = () => {
     setErrorVisible(false);
-    var err = sendInfo(getInfo('f3'), renderFinalPage);
+    var err = sendInfo(organizeInfo('f3'), renderFinalPage);
     if (err) {
       setErrorVisible(true);
     }
@@ -67,13 +98,13 @@ var renderF3Page = () => {
     document.getElementById("root")
   )
 };
-
+//F2---------------
 var F2Page = () => {
   const [errorVisible, setErrorVisible] = useState(false);
 
   var handleInfo = () => {
     setErrorVisible(false);
-    var err = sendInfo(getInfo('f2'), renderF3Page);
+    var err = sendInfo(organizeInfo('f2'), renderF3Page);
     if (err) {
       setErrorVisible(true);
     }
@@ -95,13 +126,13 @@ var renderF2Page = () => {
     document.getElementById("root")
   )
 };
-
+//F1 -------------
 var F1Page = () => {
   const [errorVisible, setErrorVisible] = useState(false);
 
   var handleInfo = () => {
     setErrorVisible(false);
-    var err = sendInfo(getInfo('f1'), renderF2Page);
+    var err = sendInfo(organizeInfo('f1'), renderF2Page);
     if (err) {
       setErrorVisible(true);
     }
@@ -123,14 +154,11 @@ var renderF1Page = () => {
     document.getElementById("root")
   )
 };
-
+//Home ----------
 var renderHomePage = () => {
   render(
     <div>
       <h1>Shopping cart</h1>
-      <p>
-        <code>Page Cookie: {JSON.stringify(document.cookie, undefined, "\t")}</code>
-      </p>
       <button onClick={renderF1Page}>Proceed to checkout</button>
     </div>,
     document.getElementById("root")

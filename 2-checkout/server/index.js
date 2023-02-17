@@ -31,5 +31,18 @@ app.post('/response', (req, res) => {
 		}
 	});
 });
+
+app.get('/response', (req, res) => {
+	dbHelper.retrieveResponse(req.session_id, (err, data) => {
+		if (err) {
+			res.statusCode = 404;
+			res.send(JSON.stringify(err));
+		}  else {
+			res.statusCode = 200;
+			res.send(JSON.stringify(data[0]));
+		}
+	});
+});
+
 app.listen(process.env.PORT);
 console.log(`Listening at http://localhost:${process.env.PORT}`);

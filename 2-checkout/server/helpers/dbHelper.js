@@ -1,6 +1,6 @@
 const db = require("../db");
 
-var getResponse = (session, cb) => {
+var retrieveResponse = (session, cb) => {
 	var query = `SELECT * FROM responses WHERE sessionId='${session}'`
 	db.query(query, (err, data) => {
 		if (err) {
@@ -36,8 +36,7 @@ var createUpdateQuery = (data, sessionId) => {
 }
 
 var saveResponse = (session, data, cb) => {
-	getResponse(session, (err, responseData) => {
-		console.log(responseData);
+	retrieveResponse(session, (err, responseData) => {
 		if (err) {
 			cb(err);
 			return;
@@ -54,6 +53,13 @@ var saveResponse = (session, data, cb) => {
 				return;
 			}
 		} else {
+			if (data.name) {
+				if (responseData.length === 14) {
+					cb('You already submitted this form!');
+					return;
+				}
+				cb(null);
+			}
 			query = createUpdateQuery(data, session);
 		}
 
@@ -69,3 +75,4 @@ var saveResponse = (session, data, cb) => {
 };
 
 module.exports.saveResponse = saveResponse;
+module.exports.retrieveResponse = retrieveResponse;
