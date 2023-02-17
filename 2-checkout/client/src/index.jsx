@@ -170,19 +170,27 @@ var getInfo = (cb) => {
   });
 }
 
+var FinalPage = (props) => {
+  var edit = (formId) => {
+    renderForm(formId, true, true);
+  }
+
+  return (
+    <div>
+    <h3>Purchase Details</h3>
+    <DetailList edit={edit} details={props.data}/>
+    <div className='buttonContainer'>
+      <button onClick={finalize}>Purchase</button>
+    </div>
+  </div>
+  )
+}
+
 //Final -----------------
 var renderFinalPage = () => {
   getInfo((data) => {
-    console.log(data);
     render(
-      <div>
-        <h3>Purchase Details</h3>
-        <DetailList details={data}/>
-        <div className='buttonContainer'>
-          <button onClick={finalize}>Purchase</button>
-          <button id="back" onClick={() => {renderForm(3)}}>Back</button>
-        </div>
-      </div>
+      <FinalPage data={data}/>
      ,
       document.getElementById("root")
     )
@@ -192,7 +200,7 @@ var renderFinalPage = () => {
 //Forms ------------
 
 
-var FormPage = (form, allowEdit) => {
+var FormPage = (form) => {
   const [errorText, setErrorText] = useState('');
   var handleInfo = () => {
     setErrorText('');
@@ -202,7 +210,7 @@ var FormPage = (form, allowEdit) => {
      return;
     }
     sendInfo(organizeInfo(`f${form.id}`), () => {
-      if (form.id === 3) {
+      if (form.id === 3 || form.finalPage) {
         renderFinalPage();
       } else {
         renderForm(form.id+1);
@@ -219,8 +227,8 @@ var FormPage = (form, allowEdit) => {
         {form.id === 3 ? <Form3 /> : null}
       </div>
       <div className='buttonContainer'>
-        <button onClick={handleInfo}>Next</button>
-        {form.id !== 1 ? <button id="back" onClick={() => {renderForm(form.id - 1, true)}}>Back</button> : null}
+        <button onClick={handleInfo}>{!form.finalPage ? 'Next' : 'Return'}</button>
+        {(form.id !== 1 && !form.finalPage) ? <button id="back" onClick={() => {renderForm(form.id - 1, true)}}>Back</button> : null}
       </div>
       <p style={{'color':'red'}}>{errorText}</p>
     </div>
@@ -228,9 +236,9 @@ var FormPage = (form, allowEdit) => {
 };
 
 
-var renderForm = (id, allowEdit = false) => {
+var renderForm = (id, allowEdit = false, finalPage = false) => {
   render(
-    <FormPage id={id} allowEdit={allowEdit}/>,
+    <FormPage id={id} allowEdit={allowEdit} finalPage={finalPage}/>,
     document.getElementById("root")
   )
 };
