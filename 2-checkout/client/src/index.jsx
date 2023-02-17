@@ -34,7 +34,7 @@ var displayError = (err) => {
   } else {
     render(
       <div>
-        <h1 style={{'color': 'red'}}>Error: {err.responseText}</h1>
+        <h1 style={{'color': 'red'}}>{err.responseText}</h1>
         <button onClick={renderHomePage}>Home</button>
       </div>,
       document.getElementById("root")
@@ -108,9 +108,11 @@ var FormPage = (form, allowEdit) => {
   return (
     <div>
       <h1>Page {form.id} </h1>
-      {form.id === 1 ? <Form1 /> : null}
-      {form.id === 2 ? <Form2 /> : null}
-      {form.id === 3 ? <Form3 /> : null}
+      <div className='form'>
+        {form.id === 1 ? <Form1 /> : null}
+        {form.id === 2 ? <Form2 /> : null}
+        {form.id === 3 ? <Form3 /> : null}
+      </div>
       <button onClick={handleInfo}>Next</button>
       {form.id !== 1 ? <button onClick={() => {renderForm(form.id - 1, true)}}>Back</button> : null}
       {errorVisible ? <p style={{'color':'red'}}>Incomplete Form!</p> : null}
