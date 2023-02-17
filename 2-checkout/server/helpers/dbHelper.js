@@ -59,6 +59,7 @@ var saveResponse = (session, data, cb) => {
 					return;
 				}
 				cb(null);
+				return;
 			}
 			query = createUpdateQuery(data, session);
 		}

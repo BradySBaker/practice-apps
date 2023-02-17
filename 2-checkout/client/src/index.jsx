@@ -70,69 +70,28 @@ var renderFinalPage = () => {
   });
 };
 
-//F3 ------------------
-var F3Page = () => {
-  const [errorVisible, setErrorVisible] = useState(false);
-
-  var handleInfo = () => {
-    setErrorVisible(false);
-    var err = sendInfo(organizeInfo('f3'), renderFinalPage);
-    if (err) {
-      setErrorVisible(true);
-    }
-  };
-
-  return (
-    <div>
-      <h1>F3 Page</h1>
-      <Form3 />
-      <button onClick={handleInfo}>Next</button>
-      {errorVisible ? <p style={{'color':'red'}}>Incomplete Form!</p> : null}
-    </div>
-  )
-}
 
 var renderF3Page = () => {
   render(
-    <F3Page />,
+    <FormPage id={3} />,
     document.getElementById("root")
   )
 };
-//F2---------------
-var F2Page = () => {
-  const [errorVisible, setErrorVisible] = useState(false);
-
-  var handleInfo = () => {
-    setErrorVisible(false);
-    var err = sendInfo(organizeInfo('f2'), renderF3Page);
-    if (err) {
-      setErrorVisible(true);
-    }
-  };
-
-  return(
-    <div>
-      <h1>F2 Page</h1>
-      <Form2 />
-      <button onClick={handleInfo}>Next</button>
-      {errorVisible ? <p style={{'color':'red'}}>Incomplete Form!</p> : null}
-    </div>
-  )
-}
 
 var renderF2Page = () => {
   render(
-    <F2Page />,
+    <FormPage id={2} />,
     document.getElementById("root")
   )
 };
-//F1 -------------
-var F1Page = () => {
-  const [errorVisible, setErrorVisible] = useState(false);
 
+//F1 -------------
+var FormPage = (form) => {
+  const [errorVisible, setErrorVisible] = useState(false);
+  var functions = [renderF2Page, renderF3Page, renderFinalPage];
   var handleInfo = () => {
     setErrorVisible(false);
-    var err = sendInfo(organizeInfo('f1'), renderF2Page);
+    var err = sendInfo(organizeInfo(`f${form.id}`), functions[form.id - 1]);
     if (err) {
       setErrorVisible(true);
     }
@@ -140,20 +99,24 @@ var F1Page = () => {
 
   return (
     <div>
-      <h1>F1 Page</h1>
-      <Form1 />
+      <h1>Page {form.id} </h1>
+      {form.id === 1 ? <Form1 /> : null}
+      {form.id === 2 ? <Form2 /> : null}
+      {form.id === 3 ? <Form3 /> : null}
       <button onClick={handleInfo}>Next</button>
       {errorVisible ? <p style={{'color':'red'}}>Incomplete Form!</p> : null}
     </div>
   )
-}
+};
+
 
 var renderF1Page = () => {
   render(
-    <F1Page />,
+    <FormPage id={1}/>,
     document.getElementById("root")
   )
 };
+
 //Home ----------
 var renderHomePage = () => {
   render(
