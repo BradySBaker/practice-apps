@@ -77,8 +77,10 @@ var renderFinalPage = () => {
       <div>
         <h3>Purchase Details</h3>
         <DetailList details={data}/>
-        <button onClick={renderHomePage}>Purchase</button>
-        <button onClick={() => {renderForm(3)}}>Back</button>
+        <div className='buttonContainer'>
+          <button onClick={renderHomePage}>Purchase</button>
+          <button id="back" onClick={() => {renderForm(3)}}>Back</button>
+        </div>
       </div>
      ,
       document.getElementById("root")
@@ -113,8 +115,10 @@ var FormPage = (form, allowEdit) => {
         {form.id === 2 ? <Form2 /> : null}
         {form.id === 3 ? <Form3 /> : null}
       </div>
-      <button onClick={handleInfo}>Next</button>
-      {form.id !== 1 ? <button onClick={() => {renderForm(form.id - 1, true)}}>Back</button> : null}
+      <div className='buttonContainer'>
+        <button onClick={handleInfo}>Next</button>
+        {form.id !== 1 ? <button id="back" onClick={() => {renderForm(form.id - 1, true)}}>Back</button> : null}
+      </div>
       {errorVisible ? <p style={{'color':'red'}}>Incomplete Form!</p> : null}
     </div>
   )
@@ -129,12 +133,22 @@ var renderForm = (id, allowEdit = false) => {
 };
 
 //Home ----------
+
+var HomePage = () => {
+  const [showBlue, setShowBlue] = useState(false);
+  return (
+    <div>
+      <div id="title">Shopping cart</div>
+      {!showBlue ? <img src="./imgs/grayCart.png" /> : null}
+      {showBlue ? <img src="./imgs/blueCart.png" /> : null}
+      <button onMouseEnter={() => {setShowBlue(true)}} onMouseLeave={() => {setShowBlue(false)}} onClick={() => renderForm(1)}>Proceed to checkout</button>
+    </div>
+  )
+}
+
 var renderHomePage = () => {
   render(
-    <div>
-      <h1>Shopping cart</h1>
-      <button onClick={() => renderForm(1)}>Proceed to checkout</button>
-    </div>,
+    <HomePage />,
     document.getElementById("root")
   );
 };
