@@ -56,7 +56,14 @@ h6,
 .list {
   text-align: center;
   overflow-wrap: break-word;
+  list-style: none;
+  font-size: 25px;
 }
+
+h3 {
+  font-size: 35px;
+}
+
 
 main {
   max-width: 840px;

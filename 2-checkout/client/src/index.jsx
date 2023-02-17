@@ -7,15 +7,108 @@ import DetailList from './components/detailList.jsx';
 import $ from 'jquery';
 
 //--------External functions
+
+//I know this could be shortened but spent to much time already
+var validateForm = (id) => {
+  var stringFields = ['name', 'city', 'state'];
+  var numberFields = ['zipcode', 'phone', 'cardNum', 'expire', 'cvv', 'billZip'];
+  var form = document.getElementById(id);
+  for (var i = 0; i < form.length; i++) {
+    var field = form[i];
+    //Validate fields filled
+    if (field.value === '' && field.id !== 'address2') {
+      return `Incomplete Form missing field: ${field.id}!`
+    }
+
+    if (field.value.length > 50) {
+      return `${field.id} to long!`;
+    }
+
+    if (field.value.length < 3 && field.id !== 'address2' && field.id !== 'state') {
+      return `${field.id} to short!`;
+    }
+    //Validate state
+    if (field.id === 'state' && field.value.length < 2) {
+      return `${field.id} to short!`;
+    }
+
+    //Validate email
+    if (field.id === 'email') {
+      var atIdx = field.value.indexOf('@');
+      var periodIdx = field.value.indexOf('.');
+      if ((atIdx === -1 || periodIdx === -1) || (atIdx >= periodIdx -1)) {
+        return 'Incorrect Email Syntax'
+      }
+      if (periodIdx === field.value.length-1) {
+        return 'Incorrect Email Syntax'
+      }
+    }
+
+    //Validate string fields
+    if (stringFields.includes(field.id)) {
+      if (/\d/.test(field.value)) {
+        return `${field.id} must not contain numbers`;
+      }
+    }
+
+    //Validate number fields
+    if (numberFields.includes(field.id)) {
+      if (!Number(field.value)) {
+        return `${field.id} must not contain characters`;
+      }
+    }
+
+    //Validate zip
+    if (field.id === 'zipcode' || field.id === 'billZip') {
+      if (field.value.length !== 5) {
+        return 'Incorrect zipcode length';
+      }
+    }
+
+    //Validate card num
+    if (field.id === 'cardNum') {
+      if (field.value.length < 13 || field.value.length > 19) {
+        return 'Incorrect card# length';
+      }
+    }
+    //Validate expiration
+    if (field.id === 'expire') {
+      if (field.value.length !== 8) {
+        return 'Incorrect expiration length';
+      }
+    }
+
+    //Validate cvv
+    if (field.id === 'cvv' && field.value.length !== 3) {
+        return 'Incorrect cvv length';
+    }
+    //Validate phone
+    if (field.id === 'phone') {
+      if (field.value.length < 7 || field.value.length > 12) {
+        return 'Inccorect phone# length';
+      }
+    }
+
+    //Validate name
+    if (field.id === 'name') {
+      var firstLast = field.value.split(' ');
+      if (firstLast[1] !== undefined) {
+        if ((firstLast[0].length < 3 || firstLast[1].length < 3) || (firstLast[0] > 50 || firstLast[1] > 50)) {
+          return 'First or Last name to short or to long';
+        }
+      }
+    }
+
+  }
+  return false;
+}
+//----------------------
+
 var organizeInfo = (id) => {
   var form = document.getElementById(id);
   var formValObj = {};
   for (var i = 0; i < form.length; i++) {
-    if (form[i].value !== '' || form[i].id === 'address2') {
       formValObj[form[i].id] = form[i].value;
-    } else {
-      return;
-    }
   }
   return formValObj;
 };
@@ -51,9 +144,6 @@ var finalize = () => {
 }
 
 var sendInfo = (formValues, cb, allowEdit, checkout) => {
-  if (!formValues) {
-    return 'empty field';
-  }
   if (allowEdit) {
     formValues.allowEdit = allowEdit;
   }
@@ -103,19 +193,21 @@ var renderFinalPage = () => {
 
 
 var FormPage = (form, allowEdit) => {
-  const [errorVisible, setErrorVisible] = useState(false);
+  const [errorText, setErrorText] = useState('');
   var handleInfo = () => {
-    setErrorVisible(false);
-    var err = sendInfo(organizeInfo(`f${form.id}`), () => {
+    setErrorText('');
+    var err = validateForm(`f${form.id}`);
+    if (err) {
+      setErrorText(err);
+     return;
+    }
+    sendInfo(organizeInfo(`f${form.id}`), () => {
       if (form.id === 3) {
         renderFinalPage();
       } else {
         renderForm(form.id+1);
       }
     }, form.allowEdit);
-    if (err) {
-      setErrorVisible(true);
-    }
   };
 
   return (
@@ -130,7 +222,7 @@ var FormPage = (form, allowEdit) => {
         <button onClick={handleInfo}>Next</button>
         {form.id !== 1 ? <button id="back" onClick={() => {renderForm(form.id - 1, true)}}>Back</button> : null}
       </div>
-      {errorVisible ? <p style={{'color':'red'}}>Incomplete Form!</p> : null}
+      <p style={{'color':'red'}}>{errorText}</p>
     </div>
   )
 };

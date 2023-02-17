@@ -2,7 +2,7 @@ var Form1 = () => {
 	return (
 		<form id="f1">
 			<label htmlFor="name">
-				Name:
+				Fullname:
 				<input type="text" id="name" name="name"/>
 			</label>
 
